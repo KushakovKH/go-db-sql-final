@@ -60,6 +60,7 @@ func TestAddGetDelete(t *testing.T) {
 	// delete
 	// удалите добавленную посылку, убедитесь в отсутствии ошибки
 	// проверьте, что посылку больше нельзя получить из БД
+
 	err = store.Delete(id)
 	require.NoError(t, err)
 	_, err = store.Get(id)
@@ -70,7 +71,7 @@ func TestAddGetDelete(t *testing.T) {
 func TestSetAddress(t *testing.T) {
 	// prepare
 	// настройте подключение к БД
-	db, err := sql.Open("sqlit", "tracker.db")
+	db, err := sql.Open("sqlite", "tracker.db")
 	if err != nil {
 		require.NoError(t, err)
 	}
