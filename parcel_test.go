@@ -34,9 +34,8 @@ func TestAddGetDelete(t *testing.T) {
 	// prepare
 	// настройте подключение к БД
 	db, err := sql.Open("sqlite", "tracker.db")
-	if err != nil {
-		require.NoError(t, err)
-	}
+	require.NoError(t, err)
+
 	defer db.Close()
 	store := NewParcelStore(db)
 	parcel := getTestParcel()
@@ -64,7 +63,7 @@ func TestAddGetDelete(t *testing.T) {
 	err = store.Delete(id)
 	require.NoError(t, err)
 	_, err = store.Get(id)
-	require.Equal(t, sql.ErrNoRows, err)
+	require.Equal(t, err, sql.ErrNoRows)
 }
 
 // TestSetAddress проверяет обновление адреса
@@ -72,9 +71,8 @@ func TestSetAddress(t *testing.T) {
 	// prepare
 	// настройте подключение к БД
 	db, err := sql.Open("sqlite", "tracker.db")
-	if err != nil {
-		require.NoError(t, err)
-	}
+	require.NoError(t, err)
+
 	defer db.Close()
 	store := NewParcelStore(db)
 	parcel := getTestParcel()
@@ -95,16 +93,15 @@ func TestSetAddress(t *testing.T) {
 	// получите добавленную посылку и убедитесь, что адрес обновился
 	res, err := store.Get(id)
 	require.NoError(t, err)
-	assert.Equal(t, res.Address, newAddress)
+	assert.Equal(t, newAddress, res.Address)
 }
 
 // TestSetStatus проверяет обновление статуса
 func TestSetStatus(t *testing.T) {
 	// prepare
 	db, err := sql.Open("sqlite", "tracker.db")
-	if err != nil {
-		require.NoError(t, err)
-	}
+	require.NoError(t, err)
+
 	defer db.Close()
 	store := NewParcelStore(db)
 	parcel := getTestParcel()
@@ -124,16 +121,15 @@ func TestSetStatus(t *testing.T) {
 	// получите добавленную посылку и убедитесь, что статус обновился
 	res, err := store.Get(id)
 	require.NoError(t, err)
-	assert.Equal(t, res.Status, ParcelStatusSent)
+	assert.Equal(t, ParcelStatusSent, res.Status)
 }
 
 // TestGetByClient проверяет получение посылок по идентификатору клиента
 func TestGetByClient(t *testing.T) {
 	// prepare
 	db, err := sql.Open("sqlite", "tracker.db")
-	if err != nil {
-		require.NoError(t, err)
-	}
+	require.NoError(t, err)
+
 	defer db.Close()
 	store := NewParcelStore(db)
 
@@ -176,7 +172,8 @@ func TestGetByClient(t *testing.T) {
 		// в parcelMap лежат добавленные посылки, ключ - идентификатор посылки, значение - сама посылка
 		// убедитесь, что все посылки из storedParcels есть в parcelMap
 		// убедитесь, что значения полей полученных посылок заполнены верно
-		require.NotEmpty(t, parcelMap[parcel.Number])
+		_, ok := parcelMap[parcel.Number]
+		require.True(t, ok)
 		assert.Equal(t, parcel, parcelMap[parcel.Number])
 	}
 }
